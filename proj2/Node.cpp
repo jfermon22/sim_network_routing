@@ -8,6 +8,8 @@
 
 #include "Node.h"
 
+#include <iomanip>
+
 uint16_t Node::nextID = 0;
 
 Node::Node(float newX, float newY):
@@ -17,8 +19,18 @@ x(newX), y(newY)
 }
 
 
+float Node::GetDistance(Node* otherNode)
+{
+	float dist = pow((x - otherNode->X()),2) + pow((y - otherNode->Y()),2);
+	return sqrt(dist);
+}
+
+
 std::ostream& operator<<(std::ostream& os, const Node& node)
 {
-    os << node.id_num << "," << node.x << "," << node.y;
+    os  << std::left 
+		<< std::setw(2) << node.id_num << " " 
+		<< std::setw(5) << node.x << "," 
+		<< std::setw(5) << node.y;
     return os;
 }

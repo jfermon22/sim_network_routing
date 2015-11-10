@@ -8,11 +8,13 @@
 
 
 
-#include <vector>
-#include "Node.h"
+
+#include "RoutingController.h"
+
 
 int main(int argc, const char * argv[]) {
 
+	
     std::vector<Node*> vecNodes;
     vecNodes.push_back(new Node (33.69,49.97));
     vecNodes.push_back(new Node (48.08,2.94));
@@ -26,11 +28,22 @@ int main(int argc, const char * argv[]) {
     vecNodes.push_back(new Node (47.27,45.79));
     vecNodes.push_back(new Node (30.0,12.67));
     vecNodes.push_back(new Node (43.67,25.67));
-
-    for (std::vector<Node*>::iterator it = vecNodes.begin(); it != vecNodes.end(); it++)
-    {
-        std::cout << *(*it) << std::endl;
-    }
     
+	uint16_t maxRadius = 20;
+	RoutingController routerC(maxRadius,vecNodes);
+	routerC.Init();
+	
+	routerC.PrintNeighborMap();
+	std::cout << std::endl;
+	routerC.PrintLinks();
+	std::cout << std::endl;
+	
+	uint16_t node7 = 7;
+	uint16_t node11 = 11;
+	routerC.ForwardingTableFor(node7);
+	//routerC.ForwardingTableFor(node11);
+	//routerC.ForwardingTableFor(18);
+	
+	
     return 0;
 }
