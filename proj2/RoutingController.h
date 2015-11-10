@@ -34,7 +34,8 @@ private:
 	void CreateLinks();
 	std::vector<Node*> GetReachableNodes(Node* newNode);
 	Link* GetLink(Node* n1, Node* n2);
-   
+    FwdTableEntry GetLowestCostNode(std::vector<FwdTableEntry> vecTentative);
+    std::vector<FwdTableEntry> InitTentativeVector(Node* curNode);
 };
 
 

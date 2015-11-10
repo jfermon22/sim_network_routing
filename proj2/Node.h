@@ -39,6 +39,11 @@ struct FwdTableEntry{
 		os  << "(" << entry.dest_id << "," <<entry.cost << "," << entry.next_hop_id << ")" ;
 		return os;
 	}
+    friend bool operator==(const FwdTableEntry& e1, const FwdTableEntry& e2)
+    {
+        return ( e1.dest_id == e2.dest_id && e1.cost == e2.cost && e1.next_hop_id == e2.next_hop_id);
+    }
+    
 };
 
 

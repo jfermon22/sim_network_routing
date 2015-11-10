@@ -41,7 +41,8 @@ int main(int argc, const char * argv[]) {
 	uint16_t node7 = 7;
 	uint16_t node11 = 11;
 	routerC.ForwardingTableFor(node7);
-	//routerC.ForwardingTableFor(node11);
+    std::cout << std::endl;
+	routerC.ForwardingTableFor(node11);
 	//routerC.ForwardingTableFor(18);
 	
 	
