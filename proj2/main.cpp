@@ -12,8 +12,11 @@
 #include "RoutingController.h"
 
 
-int main(int argc, const char * argv[]) {
-
+int main(int argc, const char * argv[]) 
+{
+	int bork = argc;
+	bork = atoi(*argv);
+	bork++;
 	
     std::vector<Node*> vecNodes;
     vecNodes.push_back(new Node (33.69,49.97));
@@ -38,13 +41,21 @@ int main(int argc, const char * argv[]) {
 	routerC.PrintLinks();
 	std::cout << std::endl;
 	
-	uint16_t node7 = 7;
-	uint16_t node11 = 11;
-	routerC.ForwardingTableFor(node7);
-    std::cout << std::endl;
-	routerC.ForwardingTableFor(node11);
-	//routerC.ForwardingTableFor(18);
 	
+	uint16_t node7 = 7;
+	std::cout << "Djikstra Forwarding Table for node: " << node7 << std::endl;
+	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node7,DIJKSTRA));
+    std::cout << std::endl;
+	uint16_t node11 = 11;
+	std::cout << "Djikstra Forwarding Table for node: " << node11 << std::endl;
+	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node11,DIJKSTRA));
+    std::cout << std::endl;
+	
+	uint16_t node1 = 1;
+	std::cout << "Prim Forwarding Table for node: " << node1 << std::endl;
+	std::vector<FwdTableEntry> vecFwdTable = routerC.ForwardingTableFor(node1,PRIM);
+	routerC.PrintFwdTableEntryVector(vecFwdTable);
+	//routerC.ForwardingTableFor(18);
 	
     return 0;
 }

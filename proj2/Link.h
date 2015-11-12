@@ -32,6 +32,26 @@ public:
 		distance = node1->GetDistance(node2);
 		cost = ( distance >= 1 ) ? pow(distance,2) : 1;
 	}
+	
+	bool ConnectedTo(Node *theNode){
+		return (theNode == node1 || theNode == node2);
+	}
+	
+	bool ConnectedTo(uint16_t nodeId){
+		return (nodeId == node1->Id_num() || nodeId == node2->Id_num());
+	}
+    
+    Node* GetOtherNode(Node *theNode){
+        Node* returnNode = NULL;
+        
+        if (theNode == node1)
+            returnNode = node2;
+        else
+            returnNode = node1;
+        
+        return returnNode;
+    }
+	
 	float Cost(){return cost;}
 	
 	friend bool operator==(const Link& l1, const Link& l2)
