@@ -45,16 +45,18 @@ int main(int argc, const char * argv[])
 	uint16_t node7 = 7;
 	std::cout << "Djikstra Forwarding Table for node: " << node7 << std::endl;
 	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node7,DIJKSTRA));
-    std::cout << std::endl;
 	uint16_t node11 = 11;
-	std::cout << "Djikstra Forwarding Table for node: " << node11 << std::endl;
+	std::cout << std::endl << "Djikstra Forwarding Table for node: " << node11 << std::endl;
 	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node11,DIJKSTRA));
-    std::cout << std::endl;
-	
+
 	uint16_t node1 = 1;
-	std::cout << "Prim Forwarding Table for node: " << node1 << std::endl;
-	std::vector<FwdTableEntry> vecFwdTable = routerC.ForwardingTableFor(node1,PRIM);
-	routerC.PrintFwdTableEntryVector(vecFwdTable);
+	std::cout << std::endl << "Prim Forwarding Table for node: " << node1 << std::endl;
+	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node1,PRIM));
+	std::cout << std::endl << "Prim Spanning Tree for node: " << node1 << std::endl;
+    routerC.PrintSpanningTree(routerC.SpanningTreeFor(node1,PRIM));
+	std::cout << std::endl << "Broadcast Forwarding totals for node: " << node1 << std::endl;
+    routerC.PrintBroadcastData(node1);
+	
 	//routerC.ForwardingTableFor(18);
 	
     return 0;

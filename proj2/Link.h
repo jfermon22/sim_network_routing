@@ -20,55 +20,13 @@ class Link {
 	float distance;
 	float cost;
 public:
-	Link(uint16_t newId, Node *newN1, Node *newN2):
-		id_num(newId),node1(newN1),node2(newN2)
-	{
-		if (node1->Id_num() > node2->Id_num())
-		{
-			node1 = newN2;
-			node2 = newN1;
-		}
-		
-		distance = node1->GetDistance(node2);
-		cost = ( distance >= 1 ) ? pow(distance,2) : 1;
-	}
-	
-	bool ConnectedTo(Node *theNode){
-		return (theNode == node1 || theNode == node2);
-	}
-	
-	bool ConnectedTo(uint16_t nodeId){
-		return (nodeId == node1->Id_num() || nodeId == node2->Id_num());
-	}
-    
-    Node* GetOtherNode(Node *theNode){
-        Node* returnNode = NULL;
-        
-        if (theNode == node1)
-            returnNode = node2;
-        else
-            returnNode = node1;
-        
-        return returnNode;
-    }
-	
+	Link(uint16_t newId, Node *newN1, Node *newN2);
+	bool ConnectedTo(Node *theNode);
+	bool ConnectedTo(uint16_t nodeId);
+    Node* GetOtherNode(Node *theNode);
 	float Cost(){return cost;}
-	
-	friend bool operator==(const Link& l1, const Link& l2)
-	{
-		return ( (l1.node1 == l2.node1 && l1.node2 == l2.node2) ||
-				 (l1.node1 == l2.node2 && l1.node2 == l2.node1) );
-	}
-
-	friend std::ostream& operator<<(std::ostream& os, const Link& link){
-		os  << std::left 
-			<< std::setw(3)<< link.id_num 
-			<< *link.node1 << " -> " 
-			<< *link.node2 << "   " 
-			<< std::setw(7) << link.distance << ", " 
-			<< std::setw(7) << link.cost;
-		return os;
-	}
+	friend bool operator==(const Link& l1, const Link& l2);
+	friend std::ostream& operator<<(std::ostream& os, const Link& link);
 };
 
 

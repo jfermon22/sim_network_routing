@@ -41,26 +41,28 @@ public:
 	void PrintNeighborMap();
 	void PrintLinks();
 	std::vector<FwdTableEntry> ForwardingTableFor(uint16_t nodeId, Algorithm algorithm);
-    void PrintSpanningTree(Node *);
 	void PrintFwdTableEntryVector(std::vector<FwdTableEntry> vec);
+	std::vector<Link*> SpanningTreeFor(uint16_t nodeId, Algorithm algorithm);
+	void PrintSpanningTree(std::vector<Link*> vec);
+	void PrintBroadcastData(uint16_t nodeId);
 	
 private:
 	void CreateNeighborMap();
 	void CreateLinks();
 	std::vector<Node*> GetReachableNodes(Node* newNode);
 	Link* GetLink(Node* n1, Node* n2);
+	Link* GetLink(uint16_t n1Id, uint16_t n2Id);
 	Node* GetNode( uint16_t nodeId);
     FwdTableEntry GetLowestCostNode(std::vector<FwdTableEntry> vec);
-    std::vector<FwdTableEntry> InitDjikstraTentativeVector(Node* curNode);
-    std::vector<FwdTableEntry> InitPrimTentativeVector(Node* curNode);
     void UpdateTentativeVector(Node* curNode,std::vector<FwdTableEntry> *vecTent,std::vector<FwdTableEntry> vecConfirmed);
     void UpdateLinksUsedVector(Node* endNode,Link* newLink, std::vector<Link *> &vecLinksUsed);
-	void PrintConfAndTent( std::vector<FwdTableEntry> vecTentative,  std::vector<FwdTableEntry> vecConf);
 	bool IsNodeReachable(Node* originNode, Node* nodeInQuestion);
 	bool IsNodeReachable(uint16_t originNodeId, uint16_t nodeInQuestionId);
 	uint16_t GetNextHopId(Node* originNode,Node* currentNode, Node* destinationNode, std::vector<FwdTableEntry> confirmedNodes);
-	std::vector<FwdTableEntry> DjikstraTableFor(uint16_t nodeId);
-	std::vector<FwdTableEntry> PrimTableFor(uint16_t nodeId);    void PrintSpanningTreeFor(std::vector<Link*> vec);
+    std::vector<FwdTableEntry> InitTentativeVector(Node* curNode, Algorithm algorithm);
+	void DjikstraRouting(uint16_t nodeId,std::vector<FwdTableEntry> &vecConfirmed, std::vector<Link *> &vecLinksUsed);
+	void PrimRouting(uint16_t nodeId,std::vector<FwdTableEntry> &vecConfirmed, std::vector<Link *> &vecLinksUsed);
+	void PrintConfAndTent( std::vector<FwdTableEntry> vecTentative, std::vector<FwdTableEntry> vecConf);
 };
 
 

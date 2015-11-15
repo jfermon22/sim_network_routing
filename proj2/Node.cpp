@@ -18,13 +18,11 @@ x(newX), y(newY)
     id_num = ++nextID;
 }
 
-
 float Node::GetDistance(Node* otherNode)
 {
 	float dist = pow((x - otherNode->X()),2) + pow((y - otherNode->Y()),2);
 	return sqrt(dist);
 }
-
 
 std::ostream& operator<<(std::ostream& os, const Node& node)
 {
