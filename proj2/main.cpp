@@ -44,10 +44,17 @@ int main(int argc, const char * argv[])
 	
 	uint16_t node7 = 7;
 	std::cout << "Djikstra Forwarding Table for node: " << node7 << std::endl;
-	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node7,DIJKSTRA));
+    routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node7,DIJKSTRA));
+    std::cout << std::endl << "Djikstra Spanning Tree for node: " << node7 << std::endl;
+    routerC.PrintSpanningTree(routerC.SpanningTreeFor(node7,DIJKSTRA));
+    
+    
 	uint16_t node11 = 11;
 	std::cout << std::endl << "Djikstra Forwarding Table for node: " << node11 << std::endl;
-	routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node11,DIJKSTRA));
+    routerC.PrintFwdTableEntryVector(routerC.ForwardingTableFor(node11,DIJKSTRA));
+    std::cout << std::endl << "Djikstra Spanning Tree for node: " << node11 << std::endl;
+    routerC.PrintSpanningTree(routerC.SpanningTreeFor(node11,DIJKSTRA));
+
 
 	uint16_t node1 = 1;
 	std::cout << std::endl << "Prim Forwarding Table for node: " << node1 << std::endl;
