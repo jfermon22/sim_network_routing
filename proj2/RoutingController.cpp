@@ -216,7 +216,48 @@ void RoutingController::PrimRouting(uint16_t nodeId,std::vector<FwdTableEntry> &
         Link *lowestCostLink = GetLowestCostLink(vecConfirmed,vecTentative);
         
         //update entry for link
-        UpdateEntryForLink(lowestCostLink,vecConfirmed,vecTentative);
+        //UpdateEntryForLink(lowestCostLink,vecConfirmed,vecTentative);
+        
+        Node* node1;
+        Node* node2;
+        lowestCostLink->GetNodes(node1, node2);
+        
+        Node* confirmedNode = NULL;
+        Node* tentativeNode = NULL;
+        
+        float confNodeCost = 0.0;
+        FwdTableEntry entry((uint16_t)NAN);
+        
+        //find which node is the confirmed node
+        std::vector<FwdTableEntry>::iterator itConf;
+        for (itConf = vecConfirmed.begin(); itConf != vecConfirmed.end(); itConf++)
+        {
+            if ( (*itConf).dest_id == node1->Id_num() ){
+                confirmedNode = node1;
+                tentativeNode = node2;
+                break;
+            }
+            else if ((*itConf).dest_id == node2->Id_num()){
+                confirmedNode = node2;
+                tentativeNode = node1;
+                break;
+            }
+        }
+        
+        confNodeCost = (*itConf).cost;
+        
+        std::vector<FwdTableEntry>::iterator itTent;
+        for (std::vector<FwdTableEntry>::iterator itTent = vecTentative.begin(); itTent != vecTentative.end(); itTent++)
+        {
+            if ( (*itTent).dest_id == tentativeNode->Id_num() )
+            {
+                (*itTent).cost = confNodeCost + lowestCostLink->Cost();
+                (*itTent).next_hop_id = GetPrimNextHopId(originNode, confirmedNode,tentativeNode, vecConfirmed);
+                vecConfirmed.push_back(*itTent);
+                vecTentative.erase(itTent);
+                break;
+            }
+        }
         
         //add link to link vector
         vecLinksUsed.push_back(lowestCostLink);
@@ -421,6 +462,31 @@ uint16_t RoutingController::GetNextHopId(Node* originNode, Node* currentNode, No
 		}
 		return (uint16_t)NAN;
 	}
+}
+
+uint16_t RoutingController::GetPrimNextHopId(Node* originNode, Node* confirmedNode, Node* tentativeNode, std::vector<FwdTableEntry> confirmedNodes)
+{
+    if( originNode == tentativeNode )
+        return 0;
+    else if( IsNodeReachable(originNode,confirmedNode) )
+    {
+        for ( std::vector<FwdTableEntry>::iterator it = confirmedNodes.begin(); it != confirmedNodes.end(); it++ )
+        {
+            if( confirmedNode->Id_num() == (*it).dest_id )
+                return (*it).next_hop_id;
+        }
+    }
+    else if ( IsNodeReachable(originNode,tentativeNode) )
+        return tentativeNode->Id_num();
+    else
+    {
+        for ( std::vector<FwdTableEntry>::iterator it = confirmedNodes.begin(); it != confirmedNodes.end(); it++ )
+        {
+            if( confirmedNode->Id_num() == (*it).dest_id )
+                return (*it).next_hop_id;
+        }
+    }
+    return (uint16_t)NAN;
 }
 
 void RoutingController::PrintConfAndTent( std::vector<FwdTableEntry> vecConfirmed,  std::vector<FwdTableEntry> vecTentative)

@@ -61,6 +61,7 @@ private:
 	bool IsNodeReachable(Node* originNode, Node* nodeInQuestion);
 	bool IsNodeReachable(uint16_t originNodeId, uint16_t nodeInQuestionId);
 	uint16_t GetNextHopId(Node* originNode,Node* currentNode, Node* destinationNode, std::vector<FwdTableEntry> confirmedNodes);
+    uint16_t GetPrimNextHopId(Node* originNode,Node* currentNode, Node* destinationNode, std::vector<FwdTableEntry> confirmedNodes);
     std::vector<FwdTableEntry> InitTentativeVector(Node* curNode, Algorithm algorithm);
 	void DjikstraRouting(uint16_t nodeId,std::vector<FwdTableEntry> &vecConfirmed, std::vector<Link *> &vecLinksUsed);
 	void PrimRouting(uint16_t nodeId,std::vector<FwdTableEntry> &vecConfirmed, std::vector<Link *> &vecLinksUsed);
