@@ -197,60 +197,29 @@ void RoutingController::PrimRouting(uint16_t nodeId,std::vector<FwdTableEntry> &
     std::vector<FwdTableEntry> vecTentative = InitTentativeVector(originNode,PRIM);
     vecConfirmed.clear();
     vecLinksUsed.clear();
+    
+    FwdTableEntry lowestCostEntry = GetLowestCostNode(vecTentative);
+    vecConfirmed.push_back(lowestCostEntry);
+    for (std::vector<FwdTableEntry>::iterator itTent = vecTentative.begin();
+         itTent != vecTentative.end(); itTent++)
+    {
+        if( *itTent == lowestCostEntry )
+        {
+            vecTentative.erase(itTent);
+            break;
+        }
+    }
 	
     while ( ! vecTentative.empty() )
     {
-        //move lowest cost to confirmed list
-        FwdTableEntry lowestCostEntry = GetLowestCostNode(vecTentative);
-        vecConfirmed.push_back(lowestCostEntry);
-        for (std::vector<FwdTableEntry>::iterator itTent = vecTentative.begin(); 
-				itTent != vecTentative.end(); itTent++) 
-		{
-            if( *itTent == lowestCostEntry ) 
-			{
-                vecTentative.erase(itTent);
-                break;
-            }
-        }
+        //get lowest cost link
+        Link *lowestCostLink = GetLowestCostLink(vecConfirmed,vecTentative);
         
-        //update currentNode
-		Node* currentNode = GetNode( lowestCostEntry.dest_id );
-		if ( ! currentNode ){
-			throw MyException("RoutingController::ForwardingTableFor - Invalid node ID: " );
-		}
+        //update entry for link
+        UpdateEntryForLink(lowestCostLink,vecConfirmed,vecTentative);
         
-        //update for nearest node
-        std::vector<Node*> vecReachableNodes = GetReachableNodes(currentNode);
-		
-        //iterate thru reachable nodes
-        for (std::vector<Node*>::iterator it = vecReachableNodes.begin(); 
-				it != vecReachableNodes.end(); it++)
-        {
-            //iterate thru tentative nodes
-            for (std::vector<FwdTableEntry>::iterator itTent = vecTentative.begin(); 
-					itTent != vecTentative.end(); itTent++)
-            {
-                //if tentative node is reachable get the link info
-                if ( (*it)->Id_num() == (*itTent).dest_id )
-                {
-                    Link* link = GetLink(currentNode,*it);
-                    if (!link){
-						throw MyException("RoutingController::ForwardingTableFor - link is null for nodes: ");
-                    }
-					
-                    float nTentCost = link->Cost() + lowestCostEntry.cost;
-                    if( nTentCost < (*itTent).cost )
-                    {
-                        (*itTent).cost = nTentCost;
-						
-                        //determine next hop id
-						(*itTent).next_hop_id = GetNextHopId(originNode,currentNode, *it, vecConfirmed);
-                        Node *endNode = GetNode((*itTent).dest_id);
-                        UpdateLinksUsedVector(endNode, link, vecLinksUsed);
-                    }
-                }
-            }
-        }
+        //add link to link vector
+        vecLinksUsed.push_back(lowestCostLink);
     }
 	return;
 }
@@ -346,6 +315,75 @@ FwdTableEntry RoutingController::GetLowestCostNode(std::vector<FwdTableEntry> ve
         }
     }
     return lowestCostEntry;
+    
+}
+
+Link* RoutingController::GetLowestCostLink(std::vector<FwdTableEntry> vecConf,std::vector<FwdTableEntry> vecTent)
+{
+    Link *lowestCostLink = NULL;
+    for (std::vector<FwdTableEntry>::iterator itConf = vecConf.begin(); itConf != vecConf.end(); itConf++)
+    {
+        for (std::vector<FwdTableEntry>::iterator itTent = vecTent.begin(); itTent != vecTent.end(); itTent++)
+        {
+            Node* confirmedNode = GetNode((*itConf).dest_id);
+            Node* tentativeNode = GetNode((*itTent).dest_id);
+            if ( IsNodeReachable(confirmedNode,tentativeNode) )
+            {
+                Link* tmpLink = GetLink(confirmedNode, tentativeNode);
+                if ( (tmpLink && lowestCostLink && tmpLink->Cost() < lowestCostLink->Cost() ) ||
+                    !lowestCostLink )
+                {
+                    lowestCostLink = tmpLink;
+                }
+            }
+        }
+    }
+    return lowestCostLink;
+    
+}
+
+void RoutingController::UpdateEntryForLink(Link *newLink,std::vector<FwdTableEntry> &vecConf,std::vector<FwdTableEntry> &vecTent)
+{
+    Node* node1;
+    Node* node2;
+    newLink->GetNodes(node1, node2);
+    
+    Node* confirmedNode = NULL;
+    Node* tentativeNode = NULL;
+    float confNodeCost = 0.0;
+    uint16_t nextHop = 0;
+    FwdTableEntry entry((uint16_t)NAN);
+    
+    //find which node is the confirmed node
+    std::vector<FwdTableEntry>::iterator itConf;
+    for (itConf = vecConf.begin(); itConf != vecConf.end(); itConf++)
+    {
+        if ( (*itConf).dest_id == node1->Id_num() ){
+            confirmedNode = node1;
+            tentativeNode = node2;
+            break;
+        }
+        else if ((*itConf).dest_id == node2->Id_num()){
+            confirmedNode = node2;
+            tentativeNode = node1;
+            break;
+        }
+    }
+    
+    confNodeCost = (*itConf).cost;
+    nextHop =(*itConf).next_hop_id;
+    
+    for (std::vector<FwdTableEntry>::iterator itTent= vecTent.begin(); itTent != vecTent.end(); itTent++)
+    {
+        if ( (*itTent).dest_id == tentativeNode->Id_num() )
+        {
+            (*itTent).cost = confNodeCost + newLink->Cost();
+            (*itTent).next_hop_id = nextHop;
+            vecConf.push_back(*itTent);
+            vecTent.erase(itTent);
+            break;
+        }
+    }
     
 }
 

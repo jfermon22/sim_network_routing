@@ -24,6 +24,7 @@ public:
 	bool ConnectedTo(Node *theNode);
 	bool ConnectedTo(uint16_t nodeId);
     Node* GetOtherNode(Node *theNode);
+    void GetNodes(Node* &node1, Node* &node2);
 	float Cost(){return cost;}
 	friend bool operator==(const Link& l1, const Link& l2);
 	friend std::ostream& operator<<(std::ostream& os, const Link& link);

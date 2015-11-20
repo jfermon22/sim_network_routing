@@ -39,6 +39,12 @@ Node* Link::GetOtherNode(Node *theNode){
 	return returnNode;
 }
 
+void Link::GetNodes(Node* &n1, Node* &n2){
+    n1 = node1;
+    n2 = node2;
+    return;
+}
+
 bool operator==(const Link& l1, const Link& l2)
 {
 	return ( (l1.node1 == l2.node1 && l1.node2 == l2.node2) ||

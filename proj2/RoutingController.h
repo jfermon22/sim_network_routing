@@ -54,7 +54,9 @@ private:
 	Link* GetLink(uint16_t n1Id, uint16_t n2Id);
 	Node* GetNode( uint16_t nodeId);
     FwdTableEntry GetLowestCostNode(std::vector<FwdTableEntry> vec);
+    Link* GetLowestCostLink(std::vector<FwdTableEntry> vecConf,std::vector<FwdTableEntry> vecTent);
     void UpdateTentativeVector(Node* curNode,std::vector<FwdTableEntry> *vecTent,std::vector<FwdTableEntry> vecConfirmed);
+    void UpdateEntryForLink(Link *newLink,std::vector<FwdTableEntry> &vecConf,std::vector<FwdTableEntry> &vecTent);
     void UpdateLinksUsedVector(Node* endNode,Link* newLink, std::vector<Link *> &vecLinksUsed);
 	bool IsNodeReachable(Node* originNode, Node* nodeInQuestion);
 	bool IsNodeReachable(uint16_t originNodeId, uint16_t nodeInQuestionId);
